@@ -39,16 +39,19 @@ const ProductCard = ({ product, addToCart }) => {
     };
   };
   
-  const { discountPercentage, discountedPrice } = getDiscount();
+  const { discountPercentage, discountAmount, discountedPrice } = getDiscount();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     setIsAddingToCart(true);
-    addToCart(product);
-    
-    // Reset animation after a short delay
-    setTimeout(() => {
+    try {
+      await addToCart(product);
+      setTimeout(() => {
+        setIsAddingToCart(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
       setIsAddingToCart(false);
-    }, 600);
+    }
   };
 
   return (
