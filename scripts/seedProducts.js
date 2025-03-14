@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Product = require('../models/Product');
 require('dotenv').config();
 
-// Sample products data
 const products = [
   {
     name: 'Premium Smartphone',
@@ -76,7 +75,6 @@ const products = [
   }
 ];
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
@@ -87,18 +85,14 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-// Seed products
 const seedProducts = async () => {
   try {
-    // Clear existing products
     await Product.deleteMany({});
     console.log('Existing products cleared');
 
-    // Insert new products
     const createdProducts = await Product.insertMany(products);
     console.log(`${createdProducts.length} products created`);
 
-    // Close connection
     mongoose.connection.close();
     console.log('Database connection closed');
   } catch (error) {

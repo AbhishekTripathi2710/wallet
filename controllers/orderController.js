@@ -4,7 +4,6 @@ const User = require('../models/User');
 const walletController = require('./walletController');
 const { cashbackPercentages, maxWalletUsagePercentage } = require('../config/cashback');
 
-// Create a new order
 exports.createOrder = async (req, res) => {
   try {
     const { products, paymentMethod, useWallet } = req.body;
@@ -13,7 +12,6 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: 'No products in order' });
     }
     
-    // Fetch product details and calculate total amount
     let totalAmount = 0;
     let orderProducts = [];
     let primaryCategory = null;
@@ -34,13 +32,11 @@ exports.createOrder = async (req, res) => {
         price: product.price
       });
       
-      // Determine primary category for cashback (using the highest value product's category)
       if (!primaryCategory || cashbackPercentages[product.category] > cashbackPercentages[primaryCategory]) {
         primaryCategory = product.category;
       }
     }
     
-    // Initialize order data
     const orderData = {
       user: req.user.id,
       products: orderProducts,
@@ -48,10 +44,8 @@ exports.createOrder = async (req, res) => {
       paymentMethod
     };
     
-    // Handle wallet usage if requested
     if (useWallet && useWallet === true) {
       try {
-        // Calculate maximum wallet amount that can be used
         const maxWalletUsage = await walletController.calculateMaxWalletUsage(
           req.user.id,
           totalAmount,
@@ -59,25 +53,20 @@ exports.createOrder = async (req, res) => {
         );
         
         if (maxWalletUsage.maxAmount > 0) {
-          // Create order first to get the order ID
           const order = new Order(orderData);
           await order.save();
           
-          // Use wallet balance
           const walletUsage = await walletController.useWalletBalance(
             req.user.id,
             maxWalletUsage.maxAmount,
             order._id
           );
           
-          // Update order with wallet amount used
           order.walletAmountUsed = walletUsage.amountUsed;
           
-          // Calculate cashback based on remaining amount (not covered by wallet)
           const remainingAmount = totalAmount - walletUsage.amountUsed;
           
           if (remainingAmount > 0) {
-            // Add cashback for the remaining amount
             const cashback = await walletController.addCashback(
               req.user.id,
               order._id,
@@ -100,15 +89,12 @@ exports.createOrder = async (req, res) => {
         }
       } catch (error) {
         console.error('Wallet usage error:', error);
-        // Continue with order creation without wallet if there's an error
       }
     }
     
-    // Create order without wallet usage
     const order = new Order(orderData);
     await order.save();
     
-    // Add cashback to user's wallet
     const cashback = await walletController.addCashback(
       req.user.id,
       order._id,
@@ -116,7 +102,6 @@ exports.createOrder = async (req, res) => {
       primaryCategory
     );
     
-    // Update order with cashback amount
     order.cashbackAmount = cashback.cashbackAmount;
     await order.save();
     
@@ -132,7 +117,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// Get all orders for a user
 exports.getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
@@ -150,7 +134,6 @@ exports.getUserOrders = async (req, res) => {
   }
 };
 
-// Get order by ID
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
@@ -161,7 +144,6 @@ exports.getOrderById = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
     
-    // Check if the order belongs to the logged-in user
     if (order.user._id.toString() !== req.user.id) {
       return res.status(401).json({ message: 'Not authorized to access this order' });
     }

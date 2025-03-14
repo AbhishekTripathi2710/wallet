@@ -1,12 +1,10 @@
 const Product = require('../models/Product');
 const { cashbackPercentages } = require('../config/cashback');
 
-// Get all products
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     
-    // Add cashback percentage information to each product
     const productsWithCashback = products.map(product => {
       const productObj = product.toObject();
       productObj.cashbackPercentage = cashbackPercentages[product.category] || 0;
@@ -24,7 +22,6 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Get product by ID
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -46,12 +43,10 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// Create a new product (admin only)
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category, image } = req.body;
     
-    // Validate category
     if (!['A', 'B', 'C'].includes(category)) {
       return res.status(400).json({ message: 'Invalid category. Must be A, B, or C' });
     }
@@ -79,19 +74,16 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// Get products by category
 exports.getProductsByCategory = async (req, res) => {
   try {
     const { category } = req.params;
     
-    // Validate category
     if (!['A', 'B', 'C'].includes(category)) {
       return res.status(400).json({ message: 'Invalid category. Must be A, B, or C' });
     }
     
     const products = await Product.find({ category });
     
-    // Add cashback percentage information to each product
     const productsWithCashback = products.map(product => {
       const productObj = product.toObject();
       productObj.cashbackPercentage = cashbackPercentages[product.category] || 0;

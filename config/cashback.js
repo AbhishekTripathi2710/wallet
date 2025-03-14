@@ -1,4 +1,3 @@
-// Cashback percentages by product category
 const cashbackPercentages = {
   A: 10, // 10% cashback for Category A products
   B: 2,  // 2% cashback for Category B products
