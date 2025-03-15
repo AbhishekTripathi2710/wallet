@@ -54,322 +54,111 @@ const ProductCard = ({ product, addToCart }) => {
     }
   };
 
+  const getCategoryColor = (category) => {
+    switch(category) {
+      case 'A': return 'bg-purple-600';
+      case 'B': return 'bg-blue-600';
+      case 'C': return 'bg-green-600';
+      default: return 'bg-gray-600';
+    }
+  };
+
   return (
     <div 
-      className="product-card animate-fade-in"
-      style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '1rem', 
-        overflow: 'hidden',
-        boxShadow: isHovered 
-          ? '0 15px 30px rgba(0, 0, 0, 0.15)' 
-          : '0 5px 15px rgba(0, 0, 0, 0.08)',
-        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-        border: '1px solid #f0f0f0'
-      }}
+      className={`bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100 ${
+        isHovered ? 'transform -translate-y-2' : ''
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={{ position: 'relative' }}>
-        <div 
-          style={{ 
-            position: 'absolute', 
-            top: '10px', 
-            right: '10px', 
-            zIndex: 10,
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s'
-          }}
+      <div className="relative">
+        {/* Favorite button */}
+        <button
           onClick={() => setIsFavorite(!isFavorite)}
+          className="absolute top-3 right-3 z-10 bg-white bg-opacity-90 w-9 h-9 rounded-full flex items-center justify-center shadow-sm hover:shadow transition-all duration-200"
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           {isFavorite ? (
-            <FaHeart style={{ color: '#e74c3c', fontSize: '1.2rem' }} />
+            <FaHeart className="text-red-500 text-lg" />
           ) : (
-            <FaRegHeart style={{ color: '#7f8c8d', fontSize: '1.2rem' }} />
+            <FaRegHeart className="text-gray-500 text-lg" />
           )}
+        </button>
+        
+        {/* Product image */}
+        <div className="h-56 overflow-hidden">
+          <img 
+            src={productImage} 
+            alt={name} 
+            className={`w-full h-full object-cover transition-transform duration-500 ${
+              isHovered ? 'transform scale-110' : ''
+            }`}
+          />
         </div>
         
-        <img 
-          src={productImage} 
-          alt={name} 
-          style={{ 
-            width: '100%', 
-            height: '220px', 
-            objectFit: 'cover',
-            transition: 'transform 0.5s',
-            transform: isHovered ? 'scale(1.05)' : 'scale(1)'
-          }}
-        />
-        
-        <div style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          left: '10px', 
-          backgroundColor: getCategoryColor(category), 
-          color: 'white', 
-          padding: '0.25rem 0.75rem', 
-          borderRadius: '2rem',
-          fontSize: '0.75rem', 
-          fontWeight: 'bold',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.25rem'
-        }}>
+        {/* Category badge */}
+        <div className={`absolute top-3 left-3 ${getCategoryColor(category)} text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md flex items-center space-x-1`}>
           <span>Category {category}</span>
         </div>
         
+        {/* Discount badge */}
         {discountPercentage > 0 && (
-          <div style={{ 
-            position: 'absolute', 
-            bottom: '10px', 
-            left: '10px', 
-            backgroundColor: '#e74c3c', 
-            color: 'white', 
-            padding: '0.25rem 0.75rem', 
-            borderRadius: '2rem',
-            fontSize: '0.8rem', 
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem',
-            boxShadow: '0 2px 8px rgba(231, 76, 60, 0.3)',
-            animation: 'pulse 2s infinite'
-          }}>
-            <FaTag /> {discountPercentage}% OFF
+          <div className="absolute bottom-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md flex items-center space-x-1 animate-pulse">
+            <FaTag className="mr-1" /> 
+            <span>{discountPercentage}% OFF</span>
           </div>
         )}
       </div>
       
-      <div style={{ 
-        padding: '1.25rem',
-        display: 'flex',
-        flexDirection: 'column',
-        flexGrow: 1,
-        position: 'relative'
-      }}>
-        <h3 style={{ 
-          fontSize: '1.25rem', 
-          fontWeight: '700', 
-          marginBottom: '0.5rem', 
-          color: '#2c3e50',
-          overflow: 'hidden', 
-          textOverflow: 'ellipsis', 
-          whiteSpace: 'nowrap' 
-        }}>{name}</h3>
+      {/* Product details */}
+      <div className="p-5 flex-grow flex flex-col">
+        <h3 className="text-lg font-bold text-gray-800 mb-1 truncate">{name}</h3>
         
-        <p style={{ 
-          color: '#7f8c8d', 
-          fontSize: '0.9rem', 
-          marginBottom: '1rem', 
-          display: '-webkit-box', 
-          WebkitLineClamp: '2', 
-          WebkitBoxOrient: 'vertical', 
-          overflow: 'hidden',
-          flexGrow: 1,
-          lineHeight: '1.5'
-        }}>{description}</p>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">{description}</p>
         
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          marginBottom: '1.25rem',
-          padding: '0.75rem',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '0.5rem'
-        }}>
-          <div>
-            {discountPercentage > 0 ? (
-              <div>
-                <span style={{ 
-                  textDecoration: 'line-through', 
-                  color: '#95a5a6', 
-                  fontSize: '0.9rem',
-                  marginRight: '0.5rem'
-                }}>
-                  ₹{price.toFixed(2)}
-                </span>
-                <span style={{ 
-                  fontSize: '1.4rem', 
-                  fontWeight: 'bold',
-                  color: '#2c3e50',
-                  display: 'block'
-                }}>
-                  ₹{discountedPrice.toFixed(2)}
-                </span>
-              </div>
-            ) : (
-              <div style={{ 
-                fontSize: '1.4rem', 
-                fontWeight: 'bold',
-                color: '#2c3e50'
-              }}>
-                ₹{price.toFixed(2)}
-              </div>
-            )}
-          </div>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            color: '#27ae60', 
-            fontSize: '0.9rem', 
-            fontWeight: '600',
-            backgroundColor: 'rgba(39, 174, 96, 0.1)',
-            padding: '0.4rem 0.75rem',
-            borderRadius: '2rem'
-          }}>
-            <FaWallet style={{ marginRight: '0.4rem' }} />
-            {cashbackPercentage}% Cashback
+        <div className="bg-gray-50 p-3 rounded-lg mb-4">
+          <div className="flex justify-between items-center">
+            <div>
+              {discountPercentage > 0 ? (
+                <div>
+                  <span className="text-gray-400 line-through text-sm mr-2">₹{price.toFixed(2)}</span>
+                  <span className="text-gray-900 font-bold text-xl">₹{discountedPrice.toFixed(2)}</span>
+                </div>
+              ) : (
+                <span className="text-gray-900 font-bold text-xl">₹{price.toFixed(2)}</span>
+              )}
+            </div>
+            <div className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium flex items-center">
+              <FaWallet className="mr-1" />
+              {cashbackPercentage}% Cashback
+            </div>
           </div>
         </div>
         
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="flex gap-2">
           <Link 
             to={`/products/${_id}`} 
-            style={{ 
-              flex: '0 0 40%', 
-              textAlign: 'center', 
-              padding: '0.75rem 0',
-              backgroundColor: '#34495e',
-              color: 'white',
-              borderRadius: '0.5rem',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              transition: 'all 0.3s',
-              boxShadow: '0 2px 5px rgba(52, 73, 94, 0.2)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#2c3e50';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#34495e';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-3 rounded-lg text-center text-sm font-medium transition-colors duration-200 flex items-center justify-center"
           >
-            <FaInfoCircle /> Details
+            <FaInfoCircle className="mr-1" /> Details
           </Link>
+          
           <button 
-            onClick={handleAddToCart} 
-            style={{ 
-              flex: '1', 
-              padding: '0.75rem 0',
-              backgroundColor: isAddingToCart ? '#27ae60' : '#e74c3c',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              transition: 'all 0.3s',
-              boxShadow: '0 2px 5px rgba(231, 76, 60, 0.2)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-            onMouseEnter={(e) => {
-              if (!isAddingToCart) {
-                e.currentTarget.style.backgroundColor = '#c0392b';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isAddingToCart) {
-                e.currentTarget.style.backgroundColor = '#e74c3c';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }
-            }}
+            onClick={handleAddToCart}
             disabled={isAddingToCart}
+            className={`flex-[2] rounded-lg py-2 px-3 text-sm font-medium flex items-center justify-center transition-all duration-200 ${
+              isAddingToCart 
+                ? 'bg-green-500 text-white' 
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
           >
-            {isAddingToCart ? (
-              <>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: '#27ae60',
-                  transform: 'translateX(-100%)',
-                  animation: 'slideInRight 0.5s forwards'
-                }}></div>
-                <span style={{ position: 'relative', zIndex: 1 }}>Added!</span>
-              </>
-            ) : (
-              <>
-                <FaShoppingCart /> Add to Cart
-              </>
-            )}
+            <FaShoppingCart className="mr-1" />
+            {isAddingToCart ? 'Added!' : 'Add to Cart'}
           </button>
         </div>
-        
-        {category === 'A' && (
-          <div style={{
-            position: 'absolute',
-            top: '-12px',
-            right: '20px',
-            backgroundColor: '#f39c12',
-            color: 'white',
-            padding: '0.25rem 0.5rem',
-            borderRadius: '0.25rem',
-            fontSize: '0.75rem',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem',
-            boxShadow: '0 2px 5px rgba(243, 156, 18, 0.3)'
-          }}>
-            <FaFire /> Best Seller
-          </div>
-        )}
       </div>
     </div>
   );
 };
-
-// Helper function to get color based on category
-const getCategoryColor = (category) => {
-  switch(category) {
-    case 'A':
-      return '#3498db'; // Blue
-    case 'B':
-      return '#2ecc71'; // Green
-    case 'C':
-      return '#9b59b6'; // Purple
-    default:
-      return '#95a5a6'; // Gray
-  }
-};
-
-// Add keyframe animation for the "Added to Cart" effect
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideInRight {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(0); }
-  }
-`;
-document.head.appendChild(style);
 
 export default ProductCard; 
