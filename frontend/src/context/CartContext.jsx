@@ -47,6 +47,10 @@ export const CartProvider = ({ children }) => {
     };
   };
 
+  const getItemDiscountInfo = (item) => {
+    return calculateDiscount(item);
+  };
+
   const addToCart = (product) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item._id === product._id);
@@ -113,7 +117,8 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         clearCart,
-        calculateDiscount
+        calculateDiscount,
+        getItemDiscountInfo
       }}
     >
       {children}

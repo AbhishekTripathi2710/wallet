@@ -41,10 +41,10 @@ const ProductCard = ({ product, addToCart }) => {
   
   const { discountPercentage, discountAmount, discountedPrice } = getDiscount();
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     setIsAddingToCart(true);
     try {
-      await addToCart(product);
+      addToCart(product);
       setTimeout(() => {
         setIsAddingToCart(false);
       }, 1000);
