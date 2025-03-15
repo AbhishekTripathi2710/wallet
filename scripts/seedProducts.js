@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Product = require('../models/Product');
 require('dotenv').config();
 
+console.log('Starting seed script...');
+console.log('DB_CONNECT:', process.env.DB_CONNECT);
+
 const products = [
   {
     name: 'Premium Smartphone',
@@ -75,9 +78,12 @@ const products = [
   }
 ];
 
+console.log('Attempting to connect to MongoDB...');
 mongoose.connect(process.env.DB_CONNECT)
   .then(() => {
     console.log('MongoDB Connected');
+    console.log('Database name:', mongoose.connection.db.databaseName);
+    console.log('Connected to host:', mongoose.connection.host);
     seedProducts();
   })
   .catch(err => {
@@ -87,11 +93,16 @@ mongoose.connect(process.env.DB_CONNECT)
 
 const seedProducts = async () => {
   try {
+    console.log('Checking for existing products...');
+    const existingCount = await Product.countDocuments();
+    console.log(`Found ${existingCount} existing products`);
+    
     await Product.deleteMany({});
     console.log('Existing products cleared');
 
     const createdProducts = await Product.insertMany(products);
     console.log(`${createdProducts.length} products created`);
+    console.log('First product ID:', createdProducts[0]._id);
 
     mongoose.connection.close();
     console.log('Database connection closed');
