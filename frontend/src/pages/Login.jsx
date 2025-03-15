@@ -76,8 +76,6 @@ const Login = () => {
       <div className="max-w-md w-full space-y-8 animate-fade-in" 
            style={{ 
             position:'relative',
-            top:'80px',
-            marginLeft:'30%',
              maxWidth:'500px',
              display:'flex',
              alignItems:'center',

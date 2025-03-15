@@ -87,8 +87,6 @@ const Register = () => {
            style={{
              backgroundColor: 'rgba(255, 255, 255, 0.95)',
              position:'relative',
-            top:'80px',
-             marginLeft:'35%',
              maxWidth:'500px',
              display:'flex',
              alignItems:'center',
