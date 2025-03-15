@@ -27,4 +27,5 @@ const ProductSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Product', ProductSchema); 
+// Explicitly specify the collection name with capital P
+module.exports = mongoose.model('Product', ProductSchema, 'Products'); 
