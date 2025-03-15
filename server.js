@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const connectDB = require('./config/db');
 require('dotenv').config();
 
@@ -22,17 +23,37 @@ app.use('/api/wallet', require('./routes/walletRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('frontend/dist'));
+// Add a simple route for health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'API is running' });
+});
 
-  // Any route that is not an API route will be redirected to index.html
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-    }
-  });
+// Serve static files in production only if the frontend/dist directory exists
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.resolve(__dirname, 'frontend', 'dist');
+  
+  // Check if the frontend/dist directory exists
+  if (fs.existsSync(distPath)) {
+    // Set static folder
+    app.use(express.static(distPath));
+
+    // Any route that is not an API route will be redirected to index.html
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api')) {
+        res.sendFile(path.resolve(distPath, 'index.html'));
+      }
+    });
+  } else {
+    // If frontend/dist doesn't exist, just handle API routes
+    app.get('*', (req, res) => {
+      if (!req.path.startsWith('/api')) {
+        res.status(404).json({ 
+          message: 'Frontend not found. This is an API server only.',
+          note: 'If you\'re looking for the frontend, please visit: ' + process.env.FRONTEND_URL
+        });
+      }
+    });
+  }
 }
 
 const PORT = process.env.PORT || 3000;
