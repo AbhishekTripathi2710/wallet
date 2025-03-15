@@ -17,11 +17,19 @@ app.use(express.json());
 // Connect to database
 connectDB();
 
+// Import routes
+const userRoutes = require('./routes/userRoutes');
+const walletRoutes = require('./routes/walletRoutes');
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const debugRoutes = require('./routes/debugRoutes');
+
 // Routes
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/wallet', require('./routes/walletRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/users', userRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/debug', debugRoutes);
 
 // Add a simple route for health check
 app.get('/api/health', (req, res) => {
