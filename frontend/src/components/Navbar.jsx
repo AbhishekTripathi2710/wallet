@@ -145,7 +145,7 @@ const Navbar = () => {
                 
                 <Link 
                   to="/cart" 
-                  className="relative p-2 bg-blue-600 hover:bg-blue-500 rounded-full transition-colors duration-200"
+                  className="relative p-2 bg-blue-100 hover:bg-blue-500 rounded-full transition-colors duration-200"
                   aria-label="Cart"
                 >
                   <FaShoppingCart className="text-xl" />
