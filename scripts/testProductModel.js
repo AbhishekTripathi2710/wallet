@@ -22,9 +22,9 @@ mongoose.connect(process.env.DB_CONNECT)
         console.log('No products found using the Product model');
         
         // Check if products exist in the collection directly
-        const productsCollection = mongoose.connection.db.collection('Products');
+        const productsCollection = mongoose.connection.db.collection('products');
         const productsCount = await productsCollection.countDocuments();
-        console.log(`Products collection contains ${productsCount} documents`);
+        console.log(`products collection contains ${productsCount} documents`);
         
         if (productsCount > 0) {
           const sampleProduct = await productsCollection.findOne();

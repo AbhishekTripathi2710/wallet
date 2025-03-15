@@ -12,6 +12,7 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [filterCategory, setFilterCategory] = useState('');
+  const [debugInfo, setDebugInfo] = useState(null);
   const { addToCart } = useCart();
   const { category } = useParams();
 
@@ -22,16 +23,42 @@ const Products = () => {
         let response;
         
         if (category) {
+          console.log('Fetching products by category:', category);
           response = await productService.getProductsByCategory(category);
           setFilterCategory(category);
         } else {
+          console.log('Fetching all products');
           response = await productService.getAllProducts();
         }
         
-        setProducts(response.data.products);
+        console.log('API Response:', response);
+        
+        if (response.data && response.data.products) {
+          console.log('Products received:', response.data.products.length);
+          setProducts(response.data.products);
+          setDebugInfo({
+            endpoint: category ? `/products/category/${category}` : '/products',
+            status: response.status,
+            productsCount: response.data.products.length,
+            firstProduct: response.data.products.length > 0 ? response.data.products[0] : null
+          });
+        } else {
+          console.error('Unexpected API response format:', response);
+          setError('Received invalid data format from API');
+          setDebugInfo({
+            endpoint: category ? `/products/category/${category}` : '/products',
+            status: response.status,
+            responseData: response.data
+          });
+        }
       } catch (err) {
         console.error('Error fetching products:', err);
         setError('Failed to load products. Please try again later.');
+        setDebugInfo({
+          endpoint: category ? `/products/category/${category}` : '/products',
+          error: err.message,
+          response: err.response?.data
+        });
       } finally {
         setLoading(false);
       }
@@ -42,8 +69,8 @@ const Products = () => {
 
   // Filter products based on search term and category
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory ? product.category === filterCategory : true;
     
     return matchesSearch && matchesCategory;
@@ -52,7 +79,7 @@ const Products = () => {
   // Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
+      return a.name?.localeCompare(b.name);
     } else if (sortBy === 'price-low') {
       return a.price - b.price;
     } else if (sortBy === 'price-high') {
@@ -69,6 +96,16 @@ const Products = () => {
         <h1 className="text-3xl font-bold mb-8 text-center">
           {category ? `${category} Products` : 'All Products'}
         </h1>
+        
+        {/* Debug Information */}
+        {debugInfo && (
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 p-4 mb-4 rounded">
+            <h3 className="font-bold">Debug Information:</h3>
+            <pre className="mt-2 text-xs overflow-auto">
+              {JSON.stringify(debugInfo, null, 2)}
+            </pre>
+          </div>
+        )}
         
         {/* Search and Filter Bar */}
         <div className="bg-white p-4 rounded-lg shadow-md mb-8">

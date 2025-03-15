@@ -27,5 +27,8 @@ const ProductSchema = new mongoose.Schema({
   }
 });
 
-// Explicitly specify the collection name with capital P
-module.exports = mongoose.model('Product', ProductSchema, 'Products'); 
+// Create a model that can access both collections
+// This will first try to use the 'products' collection (lowercase)
+const Product = mongoose.model('Product', ProductSchema, 'products');
+
+module.exports = Product; 

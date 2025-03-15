@@ -13,23 +13,32 @@ mongoose.connect(process.env.DB_CONNECT)
       // List all collections
       const collections = await mongoose.connection.db.listCollections().toArray();
       console.log('Collections in database:');
-      collections.forEach(collection => {
-        console.log(`- ${collection.name}`);
-      });
+      collections.forEach(c => console.log(` - ${c.name}`));
       
-      // Check products collection specifically
-      if (collections.some(c => c.name === 'products')) {
-        const productsCount = await mongoose.connection.db.collection('products').countDocuments();
-        console.log(`Products collection contains ${productsCount} documents`);
+      // Check Products collection specifically
+      if (collections.some(c => c.name === 'Products')) {
+        const productsCollection = mongoose.connection.db.collection('Products');
+        const count = await productsCollection.countDocuments();
+        console.log(`Products collection contains ${count} documents`);
         
-        // Show a sample product
-        if (productsCount > 0) {
-          const sampleProduct = await mongoose.connection.db.collection('products').findOne();
+        if (count > 0) {
+          const sample = await productsCollection.findOne();
           console.log('Sample product:');
-          console.log(JSON.stringify(sampleProduct, null, 2));
+          console.log(JSON.stringify(sample, null, 2));
         }
-      } else {
-        console.log('Products collection does not exist');
+      }
+      
+      // Check products collection (lowercase)
+      if (collections.some(c => c.name === 'products')) {
+        const productsCollection = mongoose.connection.db.collection('products');
+        const count = await productsCollection.countDocuments();
+        console.log(`products collection (lowercase) contains ${count} documents`);
+        
+        if (count > 0) {
+          const sample = await productsCollection.findOne();
+          console.log('Sample product (lowercase collection):');
+          console.log(JSON.stringify(sample, null, 2));
+        }
       }
     } catch (error) {
       console.error('Error checking collections:', error);
