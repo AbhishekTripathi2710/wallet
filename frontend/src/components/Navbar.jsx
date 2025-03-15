@@ -105,7 +105,7 @@ const Navbar = () => {
                 
                 <Link 
                   to="/wallet" 
-                  className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-600 py-2 px-4 rounded-lg transition-colors duration-200"
+                  className="flex items-center space-x-2 bg-blue-100 hover:bg-blue-100 py-2 px-4 rounded-lg transition-colors duration-200"
                 >
                   <FaWallet className="text-blue-300" />
                   <span className="font-medium">₹{user?.wallet?.balance.toFixed(2) || '0.00'}</span>
