@@ -4,6 +4,8 @@ import axios from 'axios';
 // When deployed separately, we use the environment variable
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
+console.log('API URL:', API_URL); // For debugging
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
@@ -33,6 +35,8 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.error('API Error:', error.message, error.response?.data);
+    
     // Handle 401 Unauthorized errors
     if (error.response && error.response.status === 401) {
       // Clear token if it's invalid or expired
