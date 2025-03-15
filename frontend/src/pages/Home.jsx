@@ -4,18 +4,21 @@ import { productService } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { FaWallet, FaShoppingCart, FaTag, FaArrowRight } from 'react-icons/fa';
+import Debug from '../components/Debug';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addToCart } = useCart();
+  const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const response = await productService.getAllProducts();
+        console.log('Products response:', response.data);
         // Get a random selection of products to feature
         const randomProducts = response.data.products
           .sort(() => 0.5 - Math.random())
@@ -34,6 +37,29 @@ const Home = () => {
 
   return (
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Debug Toggle Button */}
+      <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
+        <button
+          onClick={() => setShowDebug(!showDebug)}
+          style={{
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            fontSize: '20px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+          }}
+        >
+          🐞
+        </button>
+      </div>
+
+      {/* Debug Component */}
+      {showDebug && <Debug />}
+
       {/* Hero Section */}
       <div style={{ 
         backgroundColor: '#3498db', 
