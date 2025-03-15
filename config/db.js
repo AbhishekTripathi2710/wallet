@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ecommerce-wallet', {
+    const conn = await mongoose.connect(process.env.DB_CONNECT || 'mongodb://localhost:27017/ecommerce-wallet', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
