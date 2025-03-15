@@ -75,6 +75,14 @@ const Login = () => {
          }}>
       <div className="max-w-md w-full space-y-8 animate-fade-in" 
            style={{ 
+            position:'relative',
+            top:'80px',
+            marginLeft:'30%',
+             maxWidth:'500px',
+             display:'flex',
+             alignItems:'center',
+             justifyContent:'center',
+             flexDirection:'column', 
              backgroundColor: 'rgba(255, 255, 255, 0.95)', 
              borderRadius: '1rem', 
              padding: '2rem',

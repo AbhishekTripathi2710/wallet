@@ -84,8 +84,16 @@ const Register = () => {
            minHeight: '100vh'
          }}>
       <div className="max-w-md w-full space-y-8 animate-fade-in" 
-           style={{ 
-             backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+           style={{
+             backgroundColor: 'rgba(255, 255, 255, 0.95)',
+             position:'relative',
+            top:'80px',
+             marginLeft:'35%',
+             maxWidth:'500px',
+             display:'flex',
+             alignItems:'center',
+             justifyContent:'center',
+             flexDirection:'column', 
              borderRadius: '1rem', 
              padding: '2rem',
              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
