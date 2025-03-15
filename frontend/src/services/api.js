@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api';
+// When deployed as a single project, we can use a relative URL
+// When deployed separately, we use the environment variable
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 // Create axios instance
 const api = axios.create({
@@ -8,6 +10,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true
 });
 
 // Add a request interceptor to add the auth token to requests
@@ -15,7 +18,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers['x-auth-token'] = token;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
